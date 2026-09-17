@@ -225,7 +225,7 @@
   /* ---------- charts ---------- */
   .chart-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 20px;
   }
@@ -625,7 +625,7 @@
     if (niceMax < 0.2) niceMax = 0.2;
     if (niceMax > 1) niceMax = 1;
 
-    var W = container.clientWidth || 520, H = 240;
+    var W = container.clientWidth || 520, H = 340;
     var padL = 40, padR = 14, padT = 12, padB = 26;
     var plotW = W - padL - padR, plotH = H - padT - padB;
 
