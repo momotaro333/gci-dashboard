@@ -1,0 +1,531 @@
+<meta charset="utf-8">
+<title>GCI World 受講状況レポート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    color-scheme: light;
+    --paper:      #f6f5f0;
+    --panel:      #fffffe;
+    --ink:        #1a1917;
+    --ink-soft:   #5c5a54;
+    --muted:      #928f86;
+    --rule:       #ddd9cf;
+    --rule-strong:#c7c2b5;
+    --accent:     #2a78d6;
+    --accent-ink: #184f95;
+    --accent-soft:rgba(42,120,214,0.08);
+    --orange:     #eb6834;
+    --orange-soft:rgba(235,104,52,0.09);
+    --good:       #0ca30c;
+    --warning:    #fab219;
+    --critical:   #d03b3b;
+
+    --font-head: 'Zen Kaku Gothic New', 'Noto Sans JP', system-ui, sans-serif;
+    --font-body: 'Noto Sans JP', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:      #121110;
+      --panel:      #1a1917;
+      --ink:        #f2f0ea;
+      --ink-soft:   #bcb9b0;
+      --muted:      #837f75;
+      --rule:       #33312b;
+      --rule-strong:#454136;
+      --accent:     #3987e5;
+      --accent-ink: #a9cbf5;
+      --accent-soft:rgba(57,135,229,0.14);
+      --orange:     #d95926;
+      --orange-soft:rgba(217,89,38,0.14);
+      --good:       #0ca30c;
+      --warning:    #fab219;
+      --critical:   #d03b3b;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:      #121110;
+    --panel:      #1a1917;
+    --ink:        #f2f0ea;
+    --ink-soft:   #bcb9b0;
+    --muted:      #837f75;
+    --rule:       #33312b;
+    --rule-strong:#454136;
+    --accent:     #3987e5;
+    --accent-ink: #a9cbf5;
+    --accent-soft:rgba(57,135,229,0.14);
+    --orange:     #d95926;
+    --orange-soft:rgba(217,89,38,0.14);
+    --good:       #35c235;
+    --warning:    #e0aa3a;
+    --critical:   #e0716e;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); }
+
+  .sheet {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+  }
+
+  /* ---------------- header ---------------- */
+  .doc-head {
+    margin-bottom: 34px;
+  }
+  .doc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 30px;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .doc-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+  .doc-meta dl { display: flex; gap: 6px; margin: 0; }
+  .doc-meta dt { color: var(--muted); }
+  .doc-meta dd { margin: 0; font-weight: 500; }
+
+  /* ---------------- section rhythm ---------------- */
+  section { margin-bottom: 36px; }
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ---------------- summary ---------------- */
+  .summary {
+    font-size: 15.5px;
+    line-height: 1.9;
+    color: var(--ink);
+    margin: 0;
+  }
+  .summary strong { font-weight: 700; color: var(--ink); }
+
+  /* ---------------- KPI strip ---------------- */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 1px solid var(--rule-strong);
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  .kpi {
+    padding: 16px 14px;
+    border-left: 1px solid var(--rule);
+  }
+  .kpi:first-child { border-left: none; padding-left: 0; }
+  .kpi-label { font-size: 11.5px; color: var(--muted); margin: 0 0 8px; line-height: 1.4; min-height: 2.6em; }
+  .kpi-value { font-family: var(--font-mono); font-weight: 600; font-size: 21px; color: var(--ink); letter-spacing: -0.01em; }
+  .kpi-value .unit { font-size: 12px; color: var(--ink-soft); font-family: var(--font-body); margin-left: 2px; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+  /* ---------------- charts ---------------- */
+  .chart-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .chart-block h3 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 14.5px;
+    margin: 0 0 2px;
+  }
+  .chart-delta { font-size: 12px; color: var(--ink-soft); margin: 0 0 10px; font-family: var(--font-mono); }
+  .chart-delta .down { color: var(--critical); }
+  svg.linechart { display: block; overflow: visible; }
+
+  /* ---------------- findings ---------------- */
+  .findings { list-style: none; margin: 0; padding: 0; }
+  .findings li {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .findings li:first-child { border-top: none; }
+  .findings .idx {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+  .findings h4 {
+    font-family: var(--font-head);
+    font-size: 14.5px;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .findings p { margin: 0; color: var(--ink-soft); font-size: 13.5px; line-height: 1.7; }
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.02em;
+    padding: 1px 7px;
+    border-radius: 3px;
+    margin-left: 8px;
+    position: relative;
+    top: -1px;
+  }
+  .tag.watch { background: rgba(194,58,58,0.10); color: var(--critical); }
+  .tag.good { background: rgba(12,163,12,0.10); color: var(--good); }
+
+  /* ---------------- table ---------------- */
+  table.country {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.country caption { text-align: left; caption-side: bottom; font-size: 11.5px; color: var(--muted); padding-top: 10px; }
+  table.country th, table.country td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--rule); }
+  table.country thead th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); font-weight: 600;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+  table.country td.num, table.country th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.country td.name { font-weight: 600; }
+  table.country td.note { color: var(--muted); font-size: 11.5px; }
+  .delta { font-family: var(--font-mono); }
+  .delta.up { color: var(--good); }
+  .delta.down { color: var(--critical); }
+  .row-flag { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
+  .row-flag.watch { background: var(--critical); }
+  .row-flag.good { background: var(--good); }
+  .row-flag.neutral { background: var(--rule-strong); }
+
+  /* ---------------- footer ---------------- */
+  .doc-foot {
+    margin-top: 44px;
+    padding-top: 18px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .foot-note { font-size: 11.5px; color: var(--muted); line-height: 1.7; max-width: 480px; }
+  .foot-link {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    white-space: nowrap;
+  }
+  .foot-link:hover { opacity: 0.75; }
+
+  @media (max-width: 640px) {
+    .sheet { padding: 32px 20px 60px; }
+    h1 { font-size: 24px; }
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .kpi:nth-child(3) { border-left: none; padding-left: 0; }
+    .kpi:nth-child(odd) { border-left: none; padding-left: 0; }
+    .kpi { border-top: 1px solid var(--rule); padding-top: 12px; }
+    .kpi:first-child, .kpi:nth-child(2) { border-top: none; padding-top: 16px; }
+    .chart-pair { grid-template-columns: 1fr; gap: 28px; }
+    table.country { font-size: 12px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .foot-link { display: none; }
+  }
+</style>
+
+<div class="sheet">
+
+  <header class="doc-head">
+    <p class="doc-eyebrow">GCI World 2026 April &middot; 定例報告</p>
+    <h1>受講状況レポート</h1>
+    <div class="doc-meta">
+      <dl><dt>作成日</dt><dd>2026年9月18日</dd></dl>
+      <dl><dt>対象</dt><dd>招待済み受講者 26,529名（133ヶ国・2,966校）</dd></dl>
+      <dl><dt>集計時点</dt><dd>2026年9月17日</dd></dl>
+    </div>
+  </header>
+
+  <section>
+    <p class="section-label">サマリー</p>
+    <p class="summary">
+      出席率・課題提出率はいずれもセッションを追うごとに緩やかに低下しており、出席率はSession1の45.2%からSession14には11.1%まで落ち込んでいる。申込みはほぼ全件（99.97%）を受理しているため、離脱は選考ではなく<strong>受講開始後の継続</strong>に起因すると見てよい。受講者数の多いジンバブエ（2,935名）は出席率18.0%と全体平均（25.1%）を下回っており大規模国での定着支援が課題となる一方、エクアドルやペルーなど中規模国は平均を10pt以上上回る定着率を維持している。
+    </p>
+  </section>
+
+  <section>
+    <p class="section-label">主要指標</p>
+    <div class="kpi-strip">
+      <div class="kpi">
+        <p class="kpi-label">招待済み受講者数</p>
+        <div class="kpi-value">26,529<span class="unit">名</span></div>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">対象国・大学</p>
+        <div class="kpi-value">133<span class="unit">ヶ国</span></div>
+        <p class="kpi-sub">2,966校</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">申込み受理率</p>
+        <div class="kpi-value">99.97<span class="unit">%</span></div>
+        <p class="kpi-sub">26,592 / 26,601件</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">平均出席率（全14回）</p>
+        <div class="kpi-value" style="color:var(--accent-ink)">25.1<span class="unit">%</span></div>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">平均課題提出率（全8回）</p>
+        <div class="kpi-value" style="color:var(--orange)">31.0<span class="unit">%</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">セッション別推移</p>
+    <div class="chart-pair">
+      <div class="chart-block">
+        <h3>出席率（アンケート提出率）</h3>
+        <p class="chart-delta">S1 45.2% → S14 11.1% <span class="down">（-34.1pt）</span></p>
+        <div id="surveyChart"></div>
+      </div>
+      <div class="chart-block">
+        <h3>課題提出率</h3>
+        <p class="chart-delta">S2 41.8% → S10 20.7% <span class="down">（-21.1pt）</span></p>
+        <div id="hwChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="section-label">論点</p>
+    <ol class="findings">
+      <li>
+        <span class="idx">01</span>
+        <div>
+          <h4>継続率の逓減<span class="tag watch">要対応</span></h4>
+          <p>セッションが進むほど出席率・提出率の下落幅が広がっている。前半（S1〜S5）は緩やかだが、S6以降の落ち込みが目立つ。中盤以降のリマインド強化や動機づけ施策の効果測定が必要。</p>
+        </div>
+      </li>
+      <li>
+        <span class="idx">02</span>
+        <div>
+          <h4>ボトルネックは選考ではなく継続</h4>
+          <p>申込み受理率は99.97%とほぼ全員を受け入れており、離脱は選考基準の問題ではない。歩留まりの改善は受講開始後のオンボーディング・エンゲージメント設計に依存する。</p>
+        </div>
+      </li>
+      <li>
+        <span class="idx">03</span>
+        <div>
+          <h4>大規模国での低迷<span class="tag watch">要対応</span></h4>
+          <p>ジンバブエ（2,935名）はセネガル・パキスタンに次ぐ低水準の出席率（18.0%）。受講者数が多い分、離脱の絶対数も大きく、現地連携先の状況を確認したい。</p>
+        </div>
+      </li>
+      <li>
+        <span class="idx">04</span>
+        <div>
+          <h4>好事例国の存在<span class="tag good">好事例</span></h4>
+          <p>エクアドル・ペルー・スリランカなど150〜300名規模の国は平均を10pt以上上回る出席率を維持。運営面での違い（現地窓口の関与度など）を確認する価値がある。</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="section-label">国別ハイライト</p>
+    <table class="country">
+      <thead>
+        <tr>
+          <th>国</th>
+          <th class="num">受講者数</th>
+          <th class="num">出席率</th>
+          <th class="num">課題提出率</th>
+          <th class="num">出席率 全体平均比</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody id="countryTableBody"></tbody>
+      <caption>全体平均出席率 25.1% を基準に比較。全体平均比は出席率のポイント差。</caption>
+    </table>
+  </section>
+
+  <footer class="doc-foot">
+    <p class="foot-note">
+      データ出典: 申込一覧.csv／アンケート回答.csv／課題一覧取得_2026_09_17.csv（2026-09-17時点）。招待済みアカウントを母集団とし、課題提出率は本提出・遅延提出のいずれかを提出済みとして集計。大学名は表記ゆれを正規化（一致率96.6%、残りは未入力または未収録の大学名）。
+    </p>
+    <a class="foot-link" href="https://claude.ai/code/artifact/2aa5822c-e22c-41fd-be71-a0082ffee086" target="_blank" rel="noopener">国別・大学別の詳細ダッシュボード →</a>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SURVEY = [
+    {s:1, r:0.4517},{s:2, r:0.3816},{s:3, r:0.3376},{s:4, r:0.3044},{s:5, r:0.2786},
+    {s:6, r:0.2628},{s:7, r:0.2322},{s:8, r:0.2449},{s:9, r:0.2304},{s:10, r:0.2057},
+    {s:11, r:0.1738},{s:12, r:0.1588},{s:13, r:0.1337},{s:14, r:0.1110}
+  ];
+  var HW = [
+    {s:2, r:0.4175},{s:3, r:0.3711},{s:4, r:0.3452},{s:5, r:0.3230},{s:6, r:0.3063},
+    {s:8, r:0.2727},{s:9, r:0.2406},{s:10, r:0.2071}
+  ];
+
+  var COUNTRY_ROWS = [
+    { name:"エジプト", n:4054, attend:0.270, submit:0.330, flag:"neutral", note:"受講者数 最大" },
+    { name:"フィリピン", n:3276, attend:0.247, submit:0.308, flag:"neutral", note:"" },
+    { name:"インド", n:3269, attend:0.243, submit:0.294, flag:"neutral", note:"" },
+    { name:"コロンビア", n:3110, attend:0.252, submit:0.318, flag:"neutral", note:"" },
+    { name:"ジンバブエ", n:2935, attend:0.180, submit:0.236, flag:"watch", note:"大規模国で最低水準" },
+    { name:"セネガル", n:200, attend:0.101, submit:0.126, flag:"watch", note:"全体最低水準" },
+    { name:"ペルー", n:279, attend:0.360, submit:0.450, flag:"good", note:"中規模国の好事例" },
+    { name:"エクアドル", n:186, attend:0.402, submit:0.510, flag:"good", note:"中規模国の好事例" }
+  ];
+  var OVERALL_ATTEND = 0.251;
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function svgEl(tag, attrs) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  function fmtInt(n) { return n.toLocaleString("ja-JP"); }
+  function fmtPct(r) { return (r * 100).toFixed(1) + "%"; }
+
+  function drawChart(containerId, data, colorVar) {
+    var container = document.getElementById(containerId);
+    var W = 320, H = 150;
+    var padL = 30, padR = 14, padT = 16, padB = 20;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var sessions = data.map(function (d) { return d.s; });
+    var minS = Math.min.apply(null, sessions), maxS = Math.max.apply(null, sessions);
+    var maxR = Math.max.apply(null, data.map(function (d) { return d.r; }));
+    var niceMax = Math.ceil((maxR + 0.03) * 20) / 20;
+
+    var x = function (s) { return padL + ((s - minS) / (maxS - minS)) * plotW; };
+    var y = function (r) { return padT + plotH - (r / niceMax) * plotH; };
+
+    var svg = svgEl("svg", { class: "linechart", width: "100%", height: H, viewBox: "0 0 " + W + " " + H });
+
+    [0, 0.5, 1].forEach(function (f) {
+      var val = niceMax * f;
+      var yy = y(val);
+      svg.appendChild(svgEl("line", { x1: padL, x2: W - padR, y1: yy, y2: yy, stroke: "var(--rule)", "stroke-width": 1 }));
+      var t = svgEl("text", { x: padL - 6, y: yy + 3, "text-anchor": "end", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" });
+      t.textContent = Math.round(val * 100) + "%";
+      svg.appendChild(t);
+    });
+    svg.appendChild(svgEl("line", { x1: padL, x2: W - padR, y1: padT + plotH, y2: padT + plotH, stroke: "var(--rule-strong)", "stroke-width": 1 }));
+
+    for (var s = minS; s <= maxS; s++) {
+      var tx = svgEl("text", { x: x(s), y: padT + plotH + 14, "text-anchor": "middle", "font-size": 9.5, fill: "var(--muted)", "font-family": "var(--font-mono)" });
+      tx.textContent = "S" + s;
+      svg.appendChild(tx);
+    }
+
+    var segs = [], cur = [];
+    var map = {}; data.forEach(function (d) { map[d.s] = d; });
+    for (var s2 = minS; s2 <= maxS; s2++) {
+      if (map[s2]) cur.push(map[s2]);
+      else if (cur.length) { segs.push(cur); cur = []; }
+    }
+    if (cur.length) segs.push(cur);
+
+    segs.forEach(function (seg) {
+      var d = seg.map(function (p, i) { return (i === 0 ? "M" : "L") + x(p.s).toFixed(1) + " " + y(p.r).toFixed(1); }).join(" ");
+      svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: colorVar, "stroke-width": 2.2, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+      seg.forEach(function (p) {
+        svg.appendChild(svgEl("circle", { cx: x(p.s), cy: y(p.r), r: 2.6, fill: colorVar }));
+      });
+    });
+
+    var first = data[0], last = data[data.length - 1];
+    var lbl1 = svgEl("text", { x: x(first.s), y: y(first.r) - 8, "text-anchor": "start", "font-size": 10.5, "font-family": "var(--font-mono)", fill: "var(--ink)", "font-weight": 600 });
+    lbl1.textContent = fmtPct(first.r);
+    svg.appendChild(lbl1);
+    var lbl2 = svgEl("text", { x: x(last.s), y: y(last.r) - 8, "text-anchor": "end", "font-size": 10.5, "font-family": "var(--font-mono)", fill: "var(--ink)", "font-weight": 600 });
+    lbl2.textContent = fmtPct(last.r);
+    svg.appendChild(lbl2);
+
+    container.appendChild(svg);
+  }
+
+  drawChart("surveyChart", SURVEY, "var(--accent)");
+  drawChart("hwChart", HW, "var(--orange)");
+
+  var body = document.getElementById("countryTableBody");
+  COUNTRY_ROWS.forEach(function (r) {
+    var tr = el("tr");
+
+    var nameTd = el("td", "name");
+    var flag = el("span", "row-flag " + r.flag);
+    nameTd.appendChild(flag);
+    nameTd.appendChild(document.createTextNode(r.name));
+    tr.appendChild(nameTd);
+
+    tr.appendChild(el("td", "num", fmtInt(r.n)));
+    tr.appendChild(el("td", "num", fmtPct(r.attend)));
+    tr.appendChild(el("td", "num", fmtPct(r.submit)));
+
+    var diff = r.attend - OVERALL_ATTEND;
+    var diffTd = el("td", "num");
+    var diffSpan = el("span", "delta " + (diff >= 0 ? "up" : "down"), (diff >= 0 ? "+" : "") + (diff * 100).toFixed(1) + "pt");
+    diffTd.appendChild(diffSpan);
+    tr.appendChild(diffTd);
+
+    tr.appendChild(el("td", "note", r.note));
+    body.appendChild(tr);
+  });
+})();
+</script>

@@ -1,0 +1,902 @@
+<meta charset="utf-8">
+<title>GCI World 受講状況</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0: #f9f9f7;
+    --surface-1: #ffffff;
+    --surface-2: #f2f1ec;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --border: rgba(11,11,11,0.10);
+    --border-strong: rgba(11,11,11,0.16);
+
+    --blue: #2a78d6;
+    --blue-wash: rgba(42,120,214,0.10);
+    --orange: #eb6834;
+    --orange-wash: rgba(235,104,52,0.10);
+    --benchmark: #a6a49b;
+
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #d03b3b;
+
+    --font-display: 'Manrope', 'IBM Plex Sans JP', system-ui, sans-serif;
+    --font-body: 'IBM Plex Sans JP', 'IBM Plex Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-0: #0d0d0d;
+      --surface-1: #171716;
+      --surface-2: #1f1f1d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #8f8d86;
+      --grid: #2c2c2a;
+      --axis: #383835;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.16);
+
+      --blue: #3987e5;
+      --blue-wash: rgba(57,135,229,0.14);
+      --orange: #d95926;
+      --orange-wash: rgba(217,89,38,0.14);
+      --benchmark: #5a5952;
+
+      --good: #0ca30c;
+      --warning: #fab219;
+      --critical: #e66767;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-0: #0d0d0d;
+    --surface-1: #171716;
+    --surface-2: #1f1f1d;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8f8d86;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.16);
+
+    --blue: #3987e5;
+    --blue-wash: rgba(57,135,229,0.14);
+    --orange: #d95926;
+    --orange-wash: rgba(217,89,38,0.14);
+    --benchmark: #5a5952;
+
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #e66767;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--surface-0);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--blue-wash); }
+
+  .wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  /* ---------- header ---------- */
+  header.top {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .brand-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .meta-line {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    text-align: right;
+  }
+  .meta-line strong { color: var(--text-secondary); font-weight: 600; }
+
+  /* ---------- KPI row ---------- */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    min-width: 0;
+  }
+  .kpi-label {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+  }
+  .kpi-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .kpi-value {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .kpi.status-kpi { grid-column: span 2; }
+  .status-chip-row { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .status-chip b { color: var(--text-primary); font-weight: 600; }
+
+  .spark { display: block; overflow: visible; }
+
+  /* ---------- filter row ---------- */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    flex-wrap: wrap;
+  }
+  .breadcrumb button {
+    background: none; border: none; padding: 2px 4px; margin: 0;
+    font: inherit; color: var(--blue); cursor: pointer; border-radius: 4px;
+  }
+  .breadcrumb button:hover { background: var(--blue-wash); }
+  .breadcrumb .sep { color: var(--text-muted); }
+  .breadcrumb .current { color: var(--text-primary); padding: 2px 4px; }
+
+  .filter-controls { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field label { font-size: 10.5px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  select, input[type="search"] {
+    font: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 7px;
+    padding: 6px 10px;
+  }
+  select { min-width: 190px; }
+  select:focus, input:focus { outline: 2px solid var(--blue); outline-offset: 1px; }
+  input[type="search"] { min-width: 200px; }
+
+  /* ---------- charts ---------- */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px 14px;
+  }
+  .card-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2px; flex-wrap: wrap; gap: 8px; }
+  .card-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+  .legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--text-secondary); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-line { width: 14px; height: 0; border-top-width: 2px; border-top-style: solid; }
+  .card-sub { font-size: 11.5px; color: var(--text-muted); margin: 0 0 8px; }
+
+  .chart-svg-wrap { position: relative; }
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--surface-1);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+    opacity: 0;
+    transition: opacity 0.08s ease;
+    z-index: 5;
+    white-space: nowrap;
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip .tt-title { font-family: var(--font-mono); color: var(--text-muted); font-size: 10.5px; margin-bottom: 4px; }
+  .tooltip .tt-row { display: flex; align-items: center; gap: 6px; }
+  .tooltip .tt-row + .tt-row { margin-top: 3px; }
+  .tooltip .tt-key { width: 12px; height: 2px; flex: none; }
+  .tooltip .tt-val { font-family: var(--font-mono); font-weight: 500; margin-left: auto; padding-left: 10px; }
+  .tooltip .tt-name { color: var(--text-secondary); }
+
+  /* ---------- table ---------- */
+  .table-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .table-head-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 10px; gap: 12px; flex-wrap: wrap; }
+  .table-scroll { overflow-x: auto; }
+  table.rank { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px; }
+  table.rank th, table.rank td { padding: 8px 20px; text-align: left; white-space: nowrap; }
+  table.rank thead th {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-muted); font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--surface-1);
+    cursor: pointer; user-select: none;
+  }
+  table.rank thead th.num, table.rank td.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  table.rank thead th:hover { color: var(--text-secondary); }
+  table.rank thead th .arrow { opacity: 0.5; margin-left: 3px; }
+  table.rank tbody tr { border-bottom: 1px solid var(--border); cursor: pointer; }
+  table.rank tbody tr:hover { background: var(--surface-2); }
+  table.rank tbody tr.selected { background: var(--blue-wash); }
+  table.rank tbody tr.selected td.name { color: var(--blue); font-weight: 600; }
+  table.rank td.name { font-weight: 500; }
+  table.rank td.rank-idx { color: var(--text-muted); font-family: var(--font-mono); font-size: 11.5px; width: 28px; }
+  table.rank td.spark-cell { width: 90px; }
+  .empty-row td { text-align: center; color: var(--text-muted); padding: 28px; font-size: 13px; }
+
+  .footnote { margin-top: 14px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 900px) {
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .kpi.status-kpi { grid-column: span 2; }
+    .chart-row { grid-template-columns: 1fr; }
+    .filter-controls { margin-left: 0; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="brand-eyebrow">GCI World 2026 April &middot; 効果測定</p>
+      <h1>受講状況ダッシュボード</h1>
+    </div>
+    <div class="meta-line" id="metaLine">読み込み中…</div>
+  </header>
+
+  <section class="kpi-row" id="kpiRow"></section>
+
+  <section class="filter-bar">
+    <nav class="breadcrumb" id="breadcrumb"></nav>
+    <div class="filter-controls">
+      <div class="field">
+        <label for="countrySelect">国</label>
+        <select id="countrySelect"></select>
+      </div>
+      <div class="field">
+        <label for="schoolSelect">大学</label>
+        <select id="schoolSelect"></select>
+      </div>
+      <div class="field">
+        <label for="searchInput">一覧を検索</label>
+        <input type="search" id="searchInput" placeholder="国名・大学名で検索">
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-row">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title" id="surveyTitle">出席率推移</span>
+        <div class="legend" id="surveyLegend"></div>
+      </div>
+      <p class="card-sub">各回アンケート提出者数 ÷ 招待済み受講者数</p>
+      <div class="chart-svg-wrap" id="surveyChart"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title" id="hwTitle">課題提出率推移</span>
+        <div class="legend" id="hwLegend"></div>
+      </div>
+      <p class="card-sub">各回課題提出者数 ÷ 招待済み受講者数（本提出・遅延提出を統合）</p>
+      <div class="chart-svg-wrap" id="hwChart"></div>
+    </div>
+  </section>
+
+  <section class="table-card">
+    <div class="table-head-row">
+      <span class="card-title" id="tableTitle">国別ランキング</span>
+      <span class="kpi-sub" id="tableCount"></span>
+    </div>
+    <div class="table-scroll">
+      <table class="rank">
+        <thead>
+          <tr id="tableHeadRow"></tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="footnote" id="footnote"></p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var DATA = null;
+  var state = { country: null, school: null, search: "", sort: { key: "applicants", dir: -1 }, level: "country" };
+
+  var fmtInt = function (n) { return (n || 0).toLocaleString("ja-JP"); };
+  var fmtPct = function (r) { return (r == null ? 0 : r * 100).toFixed(1) + "%"; };
+  var fmtPct0 = function (r) { return Math.round((r || 0) * 100) + "%"; };
+
+  function byId(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function svgEl(tag, attrs) {
+    var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  fetch("dashboard_data.json")
+    .then(function (r) { return r.json(); })
+    .then(function (d) { DATA = d; init(); })
+    .catch(function (err) {
+      byId("metaLine").textContent = "データの読み込みに失敗しました";
+      console.error(err);
+    });
+
+  function init() {
+    byId("metaLine").innerHTML =
+      "生成: <strong>" + DATA.meta.generated_at + "</strong> &middot; 学校名一致率 " + fmtPct0(DATA.meta.school_match_rate);
+    byId("footnote").textContent =
+      "対象: 招待済み（受理済み）アカウント " + fmtInt(DATA.overall.applicants) + "件。出席率はアンケート回答、課題提出率は通常課題（本提出+遅延提出のいずれか）を集計。学校名は表記ゆれを正規化（一致率 " + fmtPct0(DATA.meta.school_match_rate) + "）。";
+
+    renderKPIs();
+    populateCountrySelect();
+    bindControls();
+    render();
+  }
+
+  function currentScope() {
+    if (state.school && state.country) {
+      var c = findCountry(state.country);
+      var s = c ? findSchool(c, state.school) : null;
+      if (s) return { level: "school", node: s, label: state.school, country: c };
+    }
+    if (state.country) {
+      var c2 = findCountry(state.country);
+      if (c2) return { level: "country", node: c2, label: state.country };
+    }
+    return { level: "overall", node: DATA.overall, label: "全体" };
+  }
+
+  function findCountry(name) {
+    for (var i = 0; i < DATA.countries.length; i++) if (DATA.countries[i].country === name) return DATA.countries[i];
+    return null;
+  }
+  function findSchool(countryNode, name) {
+    for (var i = 0; i < countryNode.universities.length; i++) if (countryNode.universities[i].school === name) return countryNode.universities[i];
+    return null;
+  }
+
+  /* ---------------- KPIs ---------------- */
+  function renderKPIs() {
+    var o = DATA.overall;
+    var row = byId("kpiRow");
+    row.innerHTML = "";
+
+    row.appendChild(kpiTile("招待済み受講者数", fmtInt(o.applicants), "全" + fmtInt(o.countries) + "か国 / " + fmtInt(o.schools) + "校"));
+    row.appendChild(kpiTile("対象国数", fmtInt(o.countries), "申込みのあった国・地域"));
+    row.appendChild(kpiTile("対象大学数", fmtInt(o.schools), "正規化後のユニーク大学数"));
+    row.appendChild(kpiTile("平均出席率", fmtPct(o.avg_attendance_rate), "Session" + DATA.meta.survey_sessions[0] + "〜" + DATA.meta.survey_sessions[DATA.meta.survey_sessions.length - 1] + " 平均", sparkPoints(o.survey), "blue"));
+    row.appendChild(kpiTile("平均課題提出率", fmtPct(o.avg_submission_rate), "全" + o.hw.length + "回平均", sparkPoints(o.hw), "orange"));
+
+    var statusTile = el("div", "kpi status-kpi");
+    statusTile.appendChild(el("p", "kpi-label", "申込みステータス（全体）"));
+    var big = el("div", "kpi-value-row");
+    big.appendChild(el("span", "kpi-value", fmtInt(o.total_applications)));
+    big.appendChild(el("span", "kpi-sub", "件"));
+    statusTile.appendChild(big);
+    var chips = el("div", "status-chip-row");
+    chips.appendChild(statusChip("var(--good)", "受理", o.accepted));
+    chips.appendChild(statusChip("var(--warning)", "審査待", o.pending));
+    chips.appendChild(statusChip("var(--critical)", "却下", o.rejected));
+    statusTile.appendChild(chips);
+    row.appendChild(statusTile);
+  }
+
+  function statusChip(colorVar, label, value) {
+    var c = el("span", "status-chip");
+    var dot = el("span", "status-dot");
+    dot.style.background = colorVar;
+    c.appendChild(dot);
+    c.appendChild(document.createTextNode(label + " "));
+    var b = el("b", null, fmtInt(value));
+    c.appendChild(b);
+    return c;
+  }
+
+  function kpiTile(label, value, sub, sparkData, sparkColor) {
+    var t = el("div", "kpi");
+    t.appendChild(el("p", "kpi-label", label));
+    var vr = el("div", "kpi-value-row");
+    vr.appendChild(el("span", "kpi-value", value));
+    if (sparkData) vr.appendChild(makeSparkline(sparkData, sparkColor, 64, 24));
+    t.appendChild(vr);
+    if (sub) t.appendChild(el("p", "kpi-sub", sub));
+    return t;
+  }
+
+  function sparkPoints(arr) { return arr.map(function (d) { return d.rate; }); }
+
+  function makeSparkline(values, colorKey, w, h) {
+    var svg = svgEl("svg", { class: "spark", width: w, height: h, viewBox: "0 0 " + w + " " + h });
+    if (!values.length) return svg;
+    var max = Math.max.apply(null, values.concat([0.0001]));
+    var min = 0;
+    var pad = 3;
+    var step = values.length > 1 ? (w - pad * 2) / (values.length - 1) : 0;
+    var pts = values.map(function (v, i) {
+      var x = pad + i * step;
+      var y = h - pad - ((v - min) / (max - min || 1)) * (h - pad * 2);
+      return [x, y];
+    });
+    var d = pts.map(function (p, i) { return (i === 0 ? "M" : "L") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
+    var color = colorKey === "orange" ? "var(--orange)" : "var(--blue)";
+    svg.appendChild(svgEl("path", { d: d, fill: "none", stroke: color, "stroke-width": 1.5, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+    var last = pts[pts.length - 1];
+    svg.appendChild(svgEl("circle", { cx: last[0], cy: last[1], r: 2.2, fill: color }));
+    return svg;
+  }
+
+  /* ---------------- filters ---------------- */
+  function populateCountrySelect() {
+    var sel = byId("countrySelect");
+    sel.innerHTML = "";
+    sel.appendChild(new Option("すべての国（" + DATA.countries.length + "）", ""));
+    DATA.countries.forEach(function (c) {
+      sel.appendChild(new Option(c.country + "（" + fmtInt(c.applicants) + "）", c.country));
+    });
+  }
+
+  function populateSchoolSelect(countryNode) {
+    var sel = byId("schoolSelect");
+    sel.innerHTML = "";
+    if (!countryNode) {
+      sel.appendChild(new Option("国を選択してください", ""));
+      sel.disabled = true;
+      return;
+    }
+    sel.disabled = false;
+    sel.appendChild(new Option("すべての大学（" + countryNode.universities.length + "）", ""));
+    countryNode.universities.forEach(function (s) {
+      sel.appendChild(new Option(s.school + "（" + fmtInt(s.applicants) + "）", s.school));
+    });
+  }
+
+  function bindControls() {
+    byId("countrySelect").addEventListener("change", function (e) {
+      state.country = e.target.value || null;
+      state.school = null;
+      render();
+    });
+    byId("schoolSelect").addEventListener("change", function (e) {
+      state.school = e.target.value || null;
+      render();
+    });
+    byId("searchInput").addEventListener("input", function (e) {
+      state.search = e.target.value.trim().toLowerCase();
+      renderTable();
+    });
+  }
+
+  function syncControls() {
+    byId("countrySelect").value = state.country || "";
+    var c = state.country ? findCountry(state.country) : null;
+    populateSchoolSelect(c);
+    byId("schoolSelect").value = state.school || "";
+  }
+
+  /* ---------------- breadcrumb ---------------- */
+  function renderBreadcrumb() {
+    var nav = byId("breadcrumb");
+    nav.innerHTML = "";
+    var rootBtn = el("button", null, "全体");
+    rootBtn.addEventListener("click", function () { state.country = null; state.school = null; render(); });
+    nav.appendChild(rootBtn);
+
+    if (state.country) {
+      nav.appendChild(el("span", "sep", "/"));
+      if (state.school) {
+        var cBtn = el("button", null, state.country);
+        cBtn.addEventListener("click", function () { state.school = null; render(); });
+        nav.appendChild(cBtn);
+        nav.appendChild(el("span", "sep", "/"));
+        nav.appendChild(el("span", "current", state.school));
+      } else {
+        nav.appendChild(el("span", "current", state.country));
+      }
+    }
+  }
+
+  /* ---------------- charts ---------------- */
+  function renderCharts() {
+    var scope = currentScope();
+    var isOverall = scope.level === "overall";
+    var scopeLabel = scope.label;
+
+    byId("surveyTitle").textContent = "出席率推移 — " + scopeLabel;
+    byId("hwTitle").textContent = "課題提出率推移 — " + scopeLabel;
+
+    drawLineChart(byId("surveyChart"), byId("surveyLegend"), {
+      sessions: DATA.meta.survey_sessions,
+      scopeData: scope.node.survey,
+      overallData: DATA.overall.survey,
+      showBenchmark: !isOverall,
+      color: "var(--blue)",
+      colorRaw: getCss("--blue"),
+      scopeLabel: scopeLabel,
+      unitLabel: "出席率"
+    });
+
+    drawLineChart(byId("hwChart"), byId("hwLegend"), {
+      sessions: DATA.meta.hw_sessions,
+      scopeData: scope.node.hw,
+      overallData: DATA.overall.hw,
+      showBenchmark: !isOverall,
+      color: "var(--orange)",
+      colorRaw: getCss("--orange"),
+      scopeLabel: scopeLabel,
+      unitLabel: "提出率"
+    });
+  }
+
+  function getCss(varName) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function drawLineChart(container, legendEl, opts) {
+    container.innerHTML = "";
+    legendEl.innerHTML = "";
+
+    var sessions = opts.sessions;
+    var minS = Math.min.apply(null, sessions), maxS = Math.max.apply(null, sessions);
+    var scopeMap = {}; opts.scopeData.forEach(function (d) { scopeMap[d.session] = d; });
+    var overallMap = {}; opts.overallData.forEach(function (d) { overallMap[d.session] = d; });
+
+    var allRates = opts.scopeData.map(function (d) { return d.rate; });
+    if (opts.showBenchmark) allRates = allRates.concat(opts.overallData.map(function (d) { return d.rate; }));
+    var maxRate = Math.max.apply(null, allRates.concat([0.05]));
+    var niceMax = Math.min(1, Math.ceil(maxRate * 10) / 10 + 0.05);
+    niceMax = Math.ceil(niceMax * 20) / 20; // snap to nearest 5%
+    if (niceMax < 0.2) niceMax = 0.2;
+    if (niceMax > 1) niceMax = 1;
+
+    var W = container.clientWidth || 520, H = 240;
+    var padL = 40, padR = 14, padT = 12, padB = 26;
+    var plotW = W - padL - padR, plotH = H - padT - padB;
+
+    var xScale = function (s) { return padL + ((s - minS) / (maxS - minS || 1)) * plotW; };
+    var yScale = function (r) { return padT + plotH - (r / niceMax) * plotH; };
+
+    var svg = svgEl("svg", { width: "100%", height: H, viewBox: "0 0 " + W + " " + H, class: "linechart" });
+
+    // gridlines + y ticks
+    var yTicks = 4;
+    for (var i = 0; i <= yTicks; i++) {
+      var val = (niceMax / yTicks) * i;
+      var y = yScale(val);
+      svg.appendChild(svgEl("line", { x1: padL, x2: W - padR, y1: y, y2: y, stroke: "var(--grid)", "stroke-width": 1 }));
+      var t = svgEl("text", { x: padL - 8, y: y + 3, "text-anchor": "end", "font-size": 10, fill: "var(--text-muted)", "font-family": "var(--font-mono)" });
+      t.textContent = Math.round(val * 100) + "%";
+      svg.appendChild(t);
+    }
+    // x axis baseline
+    svg.appendChild(svgEl("line", { x1: padL, x2: W - padR, y1: padT + plotH, y2: padT + plotH, stroke: "var(--axis)", "stroke-width": 1 }));
+    // x ticks: full integer range so gaps (e.g. no HW that session) are visible
+    for (var s = minS; s <= maxS; s++) {
+      var x = xScale(s);
+      var tx = svgEl("text", { x: x, y: padT + plotH + 16, "text-anchor": "middle", "font-size": 10, fill: "var(--text-muted)", "font-family": "var(--font-mono)" });
+      tx.textContent = "S" + s;
+      svg.appendChild(tx);
+    }
+
+    function buildSegments(dataMap) {
+      var segs = [], cur = [];
+      for (var s = minS; s <= maxS; s++) {
+        if (dataMap[s] != null) {
+          cur.push({ s: s, r: dataMap[s].rate, d: dataMap[s] });
+        } else if (cur.length) {
+          segs.push(cur); cur = [];
+        }
+      }
+      if (cur.length) segs.push(cur);
+      return segs;
+    }
+
+    function pathFor(points) {
+      return points.map(function (p, i) {
+        return (i === 0 ? "M" : "L") + xScale(p.s).toFixed(1) + " " + yScale(p.r).toFixed(1);
+      }).join(" ");
+    }
+
+    if (opts.showBenchmark) {
+      buildSegments(overallMap).forEach(function (seg) {
+        svg.appendChild(svgEl("path", { d: pathFor(seg), fill: "none", stroke: "var(--benchmark)", "stroke-width": 2, "stroke-dasharray": "4 3", "stroke-linecap": "round" }));
+      });
+    }
+    var scopeSegs = buildSegments(scopeMap);
+    scopeSegs.forEach(function (seg) {
+      svg.appendChild(svgEl("path", { d: pathFor(seg), fill: "none", stroke: opts.color, "stroke-width": 2.4, "stroke-linecap": "round", "stroke-linejoin": "round" }));
+      seg.forEach(function (p) {
+        svg.appendChild(svgEl("circle", { cx: xScale(p.s), cy: yScale(p.r), r: 3.4, fill: opts.color, stroke: "var(--surface-1)", "stroke-width": 2 }));
+      });
+    });
+    // end label for scope line
+    if (scopeSegs.length) {
+      var lastSeg = scopeSegs[scopeSegs.length - 1];
+      var lastP = lastSeg[lastSeg.length - 1];
+      var lt = svgEl("text", { x: xScale(lastP.s) + 6, y: yScale(lastP.r) - 8, "font-size": 11, "font-family": "var(--font-mono)", fill: "var(--text-primary)", "font-weight": 600 });
+      lt.textContent = fmtPct(lastP.r);
+      svg.appendChild(lt);
+    }
+
+    // crosshair + hit layer
+    var hoverLine = svgEl("line", { x1: 0, x2: 0, y1: padT, y2: padT + plotH, stroke: "var(--axis)", "stroke-width": 1, opacity: 0 });
+    svg.appendChild(hoverLine);
+    var hoverDotScope = svgEl("circle", { r: 5, fill: opts.color, stroke: "var(--surface-1)", "stroke-width": 2, opacity: 0 });
+    svg.appendChild(hoverDotScope);
+    var hoverDotBench = svgEl("circle", { r: 4.5, fill: "var(--benchmark)", stroke: "var(--surface-1)", "stroke-width": 2, opacity: 0 });
+    if (opts.showBenchmark) svg.appendChild(hoverDotBench);
+
+    container.appendChild(svg);
+    var tooltip = el("div", "tooltip");
+    container.appendChild(tooltip);
+
+    var hitRect = svgEl("rect", { x: padL, y: padT, width: Math.max(plotW, 1), height: plotH, fill: "transparent" });
+    svg.appendChild(hitRect);
+
+    function nearestSession(px) {
+      var rel = (px - padL) / plotW;
+      var sVal = minS + rel * (maxS - minS);
+      return Math.max(minS, Math.min(maxS, Math.round(sVal)));
+    }
+
+    hitRect.addEventListener("pointermove", function (evt) {
+      var rect = svg.getBoundingClientRect();
+      var scaleX = W / rect.width;
+      var px = (evt.clientX - rect.left) * scaleX;
+      var s = nearestSession(px);
+      var sd = scopeMap[s];
+      if (!sd) { tooltip.classList.remove("show"); hoverLine.setAttribute("opacity", 0); hoverDotScope.setAttribute("opacity", 0); hoverDotBench.setAttribute("opacity", 0); return; }
+      var x = xScale(s);
+      hoverLine.setAttribute("x1", x); hoverLine.setAttribute("x2", x); hoverLine.setAttribute("opacity", 1);
+      hoverDotScope.setAttribute("cx", x); hoverDotScope.setAttribute("cy", yScale(sd.rate)); hoverDotScope.setAttribute("opacity", 1);
+
+      var rows = "";
+      var od = overallMap[s];
+      var showBench = opts.showBenchmark && od;
+      if (showBench) {
+        hoverDotBench.setAttribute("cx", x); hoverDotBench.setAttribute("cy", yScale(od.rate)); hoverDotBench.setAttribute("opacity", 1);
+      }
+
+      tooltip.innerHTML = "";
+      var tt = el("div", "tt-title", "Session " + s);
+      tooltip.appendChild(tt);
+      tooltip.appendChild(ttRow(opts.color, opts.scopeLabel, fmtPct(sd.rate), sd.submitted + " / " + sd.target));
+      if (showBench) tooltip.appendChild(ttRow("var(--benchmark)", "全体平均", fmtPct(od.rate), od.submitted + " / " + od.target));
+
+      var left = x + 12, top = yScale(sd.rate) - 10;
+      if (left > W - 150) left = x - 150;
+      tooltip.style.left = left + "px";
+      tooltip.style.top = Math.max(0, top) + "px";
+      tooltip.classList.add("show");
+    });
+    hitRect.addEventListener("pointerleave", function () {
+      tooltip.classList.remove("show");
+      hoverLine.setAttribute("opacity", 0);
+      hoverDotScope.setAttribute("opacity", 0);
+      hoverDotBench.setAttribute("opacity", 0);
+    });
+
+    function ttRow(colorVar, name, val, sub) {
+      var row = el("div", "tt-row");
+      var key = el("span", "tt-key"); key.style.background = colorVar;
+      row.appendChild(key);
+      row.appendChild(el("span", "tt-name", name));
+      var v = el("span", "tt-val", val);
+      row.appendChild(v);
+      row.title = sub;
+      return row;
+    }
+
+    // legend
+    if (opts.showBenchmark) {
+      legendEl.appendChild(legendItem(opts.colorRaw, "solid", opts.scopeLabel));
+      legendEl.appendChild(legendItem(getCss("--benchmark"), "dashed", "全体平均"));
+    }
+  }
+
+  function legendItem(color, style, label) {
+    var i = el("span", "legend-item");
+    var line = el("span", "legend-line");
+    line.style.borderTopColor = color;
+    line.style.borderTopStyle = style === "dashed" ? "dashed" : "solid";
+    i.appendChild(line);
+    i.appendChild(document.createTextNode(label));
+    return i;
+  }
+
+  /* ---------------- table ---------------- */
+  var COUNTRY_COLS = [
+    { key: "country", label: "国", type: "name" },
+    { key: "applicants", label: "受講者数", type: "num" },
+    { key: "schools", label: "大学数", type: "num" },
+    { key: "avg_attendance_rate", label: "平均出席率", type: "pct" },
+    { key: "avg_submission_rate", label: "平均課題提出率", type: "pct" },
+    { key: "__spark", label: "出席率推移", type: "spark" }
+  ];
+  var SCHOOL_COLS = [
+    { key: "school", label: "大学", type: "name" },
+    { key: "applicants", label: "受講者数", type: "num" },
+    { key: "avg_attendance_rate", label: "平均出席率", type: "pct" },
+    { key: "avg_submission_rate", label: "平均課題提出率", type: "pct" },
+    { key: "__spark", label: "出席率推移", type: "spark" }
+  ];
+
+  function renderTable() {
+    var showSchools = !!state.country;
+    var cols = showSchools ? SCHOOL_COLS : COUNTRY_COLS;
+    var countryNode = state.country ? findCountry(state.country) : null;
+    var rows = showSchools ? (countryNode ? countryNode.universities.slice() : []) : DATA.countries.slice();
+
+    byId("tableTitle").textContent = showSchools ? (state.country + " の大学別ランキング") : "国別ランキング";
+
+    if (state.search) {
+      var key = showSchools ? "school" : "country";
+      rows = rows.filter(function (r) { return r[key].toLowerCase().indexOf(state.search) !== -1; });
+    }
+
+    var sortKey = state.sort.key, dir = state.sort.dir;
+    var validKeys = cols.map(function (c) { return c.key; }).filter(function (k) { return k !== "__spark"; });
+    if (validKeys.indexOf(sortKey) === -1) sortKey = "applicants";
+    rows.sort(function (a, b) {
+      var av = a[sortKey], bv = b[sortKey];
+      if (typeof av === "string") return av.localeCompare(bv) * dir;
+      return ((av || 0) - (bv || 0)) * dir;
+    });
+
+    byId("tableCount").textContent = rows.length + " 件";
+
+    // head
+    var headRow = byId("tableHeadRow");
+    headRow.innerHTML = "";
+    var rankTh = el("th", null, "#"); headRow.appendChild(rankTh);
+    cols.forEach(function (c) {
+      var th = el("th", c.type === "num" || c.type === "pct" ? "num" : null);
+      th.textContent = c.label;
+      if (c.key !== "__spark") {
+        if (sortKey === c.key) {
+          var arrow = el("span", "arrow", dir === -1 ? "▼" : "▲");
+          th.appendChild(arrow);
+        }
+        th.addEventListener("click", function () {
+          if (state.sort.key === c.key) state.sort.dir *= -1;
+          else state.sort = { key: c.key, dir: c.type === "name" ? 1 : -1 };
+          renderTable();
+        });
+      }
+      headRow.appendChild(th);
+    });
+
+    var body = byId("tableBody");
+    body.innerHTML = "";
+    if (!rows.length) {
+      var er = el("tr", "empty-row");
+      var td = el("td", null, "該当するデータがありません");
+      td.colSpan = cols.length + 1;
+      er.appendChild(td);
+      body.appendChild(er);
+      return;
+    }
+
+    rows.forEach(function (r, idx) {
+      var tr = el("tr");
+      var isSelected = showSchools ? (state.school === r.school) : (state.country === r.country);
+      if (isSelected) tr.classList.add("selected");
+      tr.appendChild(el("td", "rank-idx", String(idx + 1)));
+      cols.forEach(function (c) {
+        var td;
+        if (c.type === "name") {
+          td = el("td", "name", r[c.key]);
+        } else if (c.type === "num") {
+          td = el("td", "num", fmtInt(r[c.key]));
+        } else if (c.type === "pct") {
+          td = el("td", "num", fmtPct(r[c.key]));
+        } else if (c.type === "spark") {
+          td = el("td", "spark-cell");
+          td.appendChild(makeSparkline(sparkPoints(r.survey), "blue", 84, 22));
+        }
+        tr.appendChild(td);
+      });
+      tr.addEventListener("click", function () {
+        if (showSchools) {
+          state.school = (state.school === r.school) ? null : r.school;
+        } else {
+          state.country = r.country;
+          state.school = null;
+        }
+        render();
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  /* ---------------- root render ---------------- */
+  function render() {
+    syncControls();
+    renderBreadcrumb();
+    renderCharts();
+    renderTable();
+  }
+
+  window.addEventListener("resize", debounce(function () { if (DATA) renderCharts(); }, 150));
+  function debounce(fn, ms) {
+    var t;
+    return function () { clearTimeout(t); t = setTimeout(fn, ms); };
+  }
+})();
+</script>
