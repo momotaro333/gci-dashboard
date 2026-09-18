@@ -404,10 +404,41 @@
     byId("footnote").textContent =
       "対象: 招待済み（受理済み）アカウント " + fmtInt(DATA.overall.applicants) + "件。出席率はアンケート回答、課題提出率は通常課題（本提出+遅延提出のいずれか）を集計。学校名は表記ゆれを正規化（一致率 " + fmtPct0(DATA.meta.school_match_rate) + "）。";
 
+    readStateFromURL();
     renderKPIs();
     populateCountrySelect();
     bindControls();
     render();
+
+    window.addEventListener("popstate", function () {
+      readStateFromURL();
+      render();
+    });
+  }
+
+  /* ---------------- URL <-> state sync ---------------- */
+  function readStateFromURL() {
+    var params = new URLSearchParams(location.search);
+    state.country = params.get("country") || null;
+    state.school = params.get("school") || null;
+    state.search = params.get("q") || "";
+    var sortKey = params.get("sort");
+    var sortDir = params.get("dir");
+    if (sortKey) state.sort.key = sortKey;
+    if (sortDir === "1" || sortDir === "-1") state.sort.dir = Number(sortDir);
+  }
+
+  function writeStateToURL(push) {
+    var params = new URLSearchParams();
+    if (state.country) params.set("country", state.country);
+    if (state.school) params.set("school", state.school);
+    if (state.search) params.set("q", state.search);
+    if (state.sort.key !== "applicants") params.set("sort", state.sort.key);
+    if (state.sort.dir !== -1) params.set("dir", String(state.sort.dir));
+    var qs = params.toString();
+    var url = location.pathname + (qs ? "?" + qs : "");
+    if (push) history.pushState(null, "", url);
+    else history.replaceState(null, "", url);
   }
 
   function currentScope() {
@@ -531,14 +562,17 @@
     byId("countrySelect").addEventListener("change", function (e) {
       state.country = e.target.value || null;
       state.school = null;
+      writeStateToURL(true);
       render();
     });
     byId("schoolSelect").addEventListener("change", function (e) {
       state.school = e.target.value || null;
+      writeStateToURL(true);
       render();
     });
     byId("searchInput").addEventListener("input", function (e) {
-      state.search = e.target.value.trim().toLowerCase();
+      state.search = e.target.value.trim();
+      writeStateToURL(false);
       renderTable();
     });
   }
@@ -548,6 +582,7 @@
     var c = state.country ? findCountry(state.country) : null;
     populateSchoolSelect(c);
     byId("schoolSelect").value = state.school || "";
+    byId("searchInput").value = state.search || "";
   }
 
   /* ---------------- breadcrumb ---------------- */
@@ -555,14 +590,14 @@
     var nav = byId("breadcrumb");
     nav.innerHTML = "";
     var rootBtn = el("button", null, "全体");
-    rootBtn.addEventListener("click", function () { state.country = null; state.school = null; render(); });
+    rootBtn.addEventListener("click", function () { state.country = null; state.school = null; writeStateToURL(true); render(); });
     nav.appendChild(rootBtn);
 
     if (state.country) {
       nav.appendChild(el("span", "sep", "/"));
       if (state.school) {
         var cBtn = el("button", null, state.country);
-        cBtn.addEventListener("click", function () { state.school = null; render(); });
+        cBtn.addEventListener("click", function () { state.school = null; writeStateToURL(true); render(); });
         nav.appendChild(cBtn);
         nav.appendChild(el("span", "sep", "/"));
         nav.appendChild(el("span", "current", state.school));
@@ -805,7 +840,8 @@
 
     if (state.search) {
       var key = showSchools ? "school" : "country";
-      rows = rows.filter(function (r) { return r[key].toLowerCase().indexOf(state.search) !== -1; });
+      var q = state.search.toLowerCase();
+      rows = rows.filter(function (r) { return r[key].toLowerCase().indexOf(q) !== -1; });
     }
 
     var sortKey = state.sort.key, dir = state.sort.dir;
@@ -834,6 +870,7 @@
         th.addEventListener("click", function () {
           if (state.sort.key === c.key) state.sort.dir *= -1;
           else state.sort = { key: c.key, dir: c.type === "name" ? 1 : -1 };
+          writeStateToURL(false);
           renderTable();
         });
       }
@@ -877,6 +914,7 @@
           state.country = r.country;
           state.school = null;
         }
+        writeStateToURL(true);
         render();
       });
       body.appendChild(tr);
